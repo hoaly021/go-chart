@@ -218,6 +218,23 @@ func (bc BarChart) drawBars(r Renderer, canvasBox Box, yr Range) {
 		}
 
 		Draw.Box(r, barBox, bar.Style.InheritFrom(bc.styleDefaultsBar(index)))
+		axisStyle := bc.XAxis.InheritFrom(bc.styleDefaultsAxes())
+		r.SetFont(axisStyle.Font)
+		r.SetFontColor(axisStyle.FontColor)
+		r.SetFontSize(axisStyle.FontSize)
+		labelTop := by + 10
+		str := fmt.Sprintf("%d", int(bar.Value))
+		if canvasBox.Bottom-by <= 20 {
+			labelTop = by - 20
+		}
+
+		barLabelBox := Box{
+			Top:    labelTop,
+			Left:   bxl,
+			Right:  bxr,
+			Bottom: canvasBox.Bottom,
+		}
+		Draw.TextWithin(r, str, barLabelBox, axisStyle)
 
 		xoffset += width + spacing
 	}
@@ -306,9 +323,9 @@ func (bc BarChart) drawTitle(r Renderer) {
 		textHeight := textBox.Height()
 
 		titleX := (bc.GetWidth() >> 1) - (textWidth >> 1)
-		titleY := bc.TitleStyle.Padding.GetTop(DefaultTitleTop) + textHeight
+		//titleY := bc.TitleStyle.Padding.GetTop(DefaultTitleTop) + textHeight
 
-		r.Text(bc.Title, titleX, titleY)
+		r.Text(bc.Title, titleX, bc.GetHeight()-(textHeight-5))
 	}
 }
 
